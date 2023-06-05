@@ -7,7 +7,7 @@ import IconsSection from "./IconsSection";
 import UserMenu from "./UserMenu/UserMenu";
 
 interface RightContentProps {
-	user?: User | null;
+	user?: any | null;
 }
 
 const RightContent: FunctionComponent<RightContentProps> = (props) => {
@@ -15,8 +15,12 @@ const RightContent: FunctionComponent<RightContentProps> = (props) => {
 		<>
 			<AuthModal></AuthModal>
 			<Flex align="center" justify="center">
-				{props.user ? <IconsSection></IconsSection> : <AuthButtons></AuthButtons>}
-				<UserMenu user={props.user} ></UserMenu>
+				{props.user ? (
+					<IconsSection></IconsSection>
+				) : (
+					<AuthButtons></AuthButtons>
+				)}
+				<UserMenu user={props.user}></UserMenu>
 			</Flex>
 		</>
 	);

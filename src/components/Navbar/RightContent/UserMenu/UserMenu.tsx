@@ -19,12 +19,11 @@ import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
 
 interface UserMenuProps {
-	user?: User | null;
+	user?: any | null;
 }
 
 const UserMenu: FunctionComponent<UserMenuProps> = ({ user }) => {
 	const setModalState = useSetRecoilState(authModalState);
-
 	return (
 		<>
 			<Menu>

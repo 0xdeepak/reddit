@@ -13,10 +13,14 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body>
+			<body style={{ height: "100vh", backgroundColor: "gray.200" }}>
 				<Providers>
 					<Navbar></Navbar>
-					<main>{children}</main>
+					<main
+						style={{ height: "100%", display: "flex", flexDirection: "column" }}
+					>
+						{children}
+					</main>
 				</Providers>
 			</body>
 		</html>

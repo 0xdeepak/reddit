@@ -10,11 +10,13 @@ import {
 import { FunctionComponent } from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { TiHome } from "react-icons/ti";
-import CommunityMenuList from "./CommunityMenuList"
+import CommunityMenuList from "./CommunityMenuList";
 
-interface CommunitySectionsProps {}
+interface CommunitySectionProps {
+	user?: any | null;
+}
 
-const CommunitySections: FunctionComponent<CommunitySectionsProps> = () => {
+const CommunitySection: FunctionComponent<CommunitySectionProps> = (props) => {
 	return (
 		<>
 			<Menu>
@@ -48,12 +50,12 @@ const CommunitySections: FunctionComponent<CommunitySectionsProps> = () => {
 						</Text>
 					</Flex>
 				</MenuButton>
-				<MenuList width="260px" >
-					<CommunityMenuList></CommunityMenuList>
+				<MenuList width="260px">
+					<CommunityMenuList user={props.user}></CommunityMenuList>
 				</MenuList>
 			</Menu>
 		</>
 	);
 };
 
-export default CommunitySections;
+export default CommunitySection;

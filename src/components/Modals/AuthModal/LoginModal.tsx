@@ -20,10 +20,12 @@ import {
 	useSignInWithGoogle,
 	useSignInWithApple,
 	useSignInWithEmailAndPassword,
-	useAuthState
 } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
+import { auth, firestore } from "@/firebase/clientApp";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
+import { UserCredential } from "@firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { userAtom } from "@/atoms/userAtom";
 
 interface LoginModalProps {}
 
@@ -33,7 +35,7 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 		password: "",
 	});
 	const [modalState, setModalState] = useRecoilState(authModalState);
-	const [signInWithGoogle, googoleUser, googleLoading, googleSignInError] =
+	const [signInWithGoogle, googleUser, googleLoading, googleSignInError] =
 		useSignInWithGoogle(auth);
 	const [signInWithApple, appleUser, appleLoading, appleSignInError] =
 		useSignInWithApple(auth);
@@ -43,7 +45,7 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 		emailSignInLoading,
 		emailSignInError,
 	] = useSignInWithEmailAndPassword(auth);
-	const [signedInUser, userLoading, userError] = useAuthState(auth);
+	const [currentUser, setCurrentUser] = useRecoilState(userAtom);
 
 	useEffect(() => {
 		setUserCredentials({
@@ -53,13 +55,13 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 	}, [modalState]);
 
 	useEffect(() => {
-		if(signedInUser) {
+		if (currentUser.user) {
 			setModalState((prevState) => ({
 				...prevState,
-				open: false
-			}))
+				open: false,
+			}));
 		}
-	}, [signedInUser]);
+	}, [currentUser, setModalState]);
 
 	const handleClose = () => {
 		setModalState((prevState) => ({
@@ -97,16 +99,26 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 	};
 
 	const handleGoogleSignIn = () => {
-		signInWithGoogle();
+		signInWithGoogle().then((res?: UserCredential) => {
+			setDoc(
+				doc(firestore, "users", res?.user.uid!),
+				JSON.parse(JSON.stringify(res?.user))
+			);
+		});
 	};
 
 	const handleAppleSignIn = () => {
-		signInWithApple();
+		signInWithApple().then((res?: UserCredential) => {
+			setDoc(
+				doc(firestore, "users", res?.user.uid!),
+				JSON.parse(JSON.stringify(res?.user))
+			);
+		});
 	};
 
 	const handleSignInWithEmail = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		signInWithEmailAndPassword(userCredentials.email,userCredentials.password);
+		signInWithEmailAndPassword(userCredentials.email, userCredentials.password);
 	};
 
 	const isFormValid = () => {
@@ -128,199 +140,209 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 			>
 				<ModalOverlay />
 				<ModalContent
-					width="400px"
-					height="640px"
+					width="auto"
 					borderRadius="12px"
-					padding="80px 60px 50px 60px"
+					maxWidth="600px"
+					height="min(640px, calc(100vh - 84px))"
+					overflow="auto"
+					marginTop="60px"
+					marginBottom="18px"
 				>
-					<ModalCloseButton
-						color="#878a8c"
-						_hover={{ backgroundColor: "#FFFF" }}
-					/>
-					<ModalBody padding="0 0">
-						<Flex
-							flexDirection="column"
-							justifyContent="space-between"
-							height="full"
-						>
-							<div>
-								<Heading as="h1" fontSize="20px" fontWeight="500">
-									Log In
-								</Heading>
-								<Text fontSize="12px" marginTop="8px">
-									By continuing, you are setting up a Reddit account and agree
-									to our User Agreement and Privacy Policy.
-								</Text>
-							</div>
-							<div>
-								<Button
-									padding="12px"
-									border="1px solid #dadce0"
-									borderRadius="2rem"
-									width="full"
-									justifyContent="start"
-									backgroundColor="#FFFF"
-									_hover={{ backgroundColor: "gray.100" }}
-									isLoading={googleLoading}
-									onClick={handleGoogleSignIn}
-								>
-									<Image src={GoogleLogo} alt="Google Logo" height={18} />
-									<Box flex="1" textAlign="center">
-										<Text fontSize="14px" fontWeight="500">
-											Continue with Google
-										</Text>
-									</Box>
-								</Button>
-								{googleSignInError && (
-									<Text fontSize="12px" marginTop="8px" color="red.400">
-										{FIREBASE_ERRORS[
-											googleSignInError?.code
-												.split("/")
-												.pop() as keyof typeof FIREBASE_ERRORS
-										] || googleSignInError.message}
-									</Text>
-								)}
-								<Button
-									padding="12px"
-									border="1px solid #dadce0"
-									borderRadius="2rem"
-									width="full"
-									justifyContent="start"
-									backgroundColor="#FFFF"
-									_hover={{ backgroundColor: "gray.100" }}
-									marginTop="8px"
-									isLoading={appleLoading}
-									onClick={handleAppleSignIn}
-								>
-									<Image
-										src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
-										alt="Google Logo"
-										height={18}
-										width="18"
-									/>
-									<Box flex="1" textAlign="center">
-										<Text fontSize="14px" fontWeight="500">
-											Continue with Apple
-										</Text>
-									</Box>
-								</Button>
-								{appleSignInError && (
-									<Text fontSize="12px" marginTop="8px" color="red.400">
-										{FIREBASE_ERRORS[
-											appleSignInError?.code
-												.split("/")
-												.pop() as keyof typeof FIREBASE_ERRORS
-										] || appleSignInError.message}
-									</Text>
-								)}
-							</div>
-							<Flex alignItems="center" justifyContent="space-between">
-								<span
-									style={{ border: "1px solid #edeff1", width: "40%" }}
-								></span>
-								<Text fontSize="14px" fontWeight="700" color="#787c7e">
-									OR
-								</Text>
-								<span
-									style={{ border: "1px solid #edeff1", width: "40%" }}
-								></span>
-							</Flex>
-							<form
-								onSubmit={handleSignInWithEmail}
-								style={{ display: "flex", flexDirection: "column" }}
+					<Flex
+						direction="column"
+						width="400px"
+						minHeight="600px"
+						padding="80px 60px 50px 60px"
+					>
+						<ModalCloseButton
+							color="#878a8c"
+							_hover={{ backgroundColor: "#FFFF" }}
+						/>
+						<ModalBody padding="0 0">
+							<Flex
+								flexDirection="column"
+								justifyContent="space-between"
+								height="full"
 							>
 								<div>
-									<Input
-										placeholder="Email"
-										value={userCredentials["email"]}
-										_placeholder={{
-											fontSize: "14px",
-											fontWeight: "500",
-											color: "#787c7e",
-										}}
-										padding="15px"
-										fontSize="14px"
-										borderRadius="2rem"
-										border="0px"
-										backgroundColor="#f6f7f8"
-										_hover={{ border: "1px solid #00000033" }}
-										_focusVisible={{ border: "1px solid #00000033" }}
-										autoFocus={true}
-										onChange={handleEmailChange}
-									></Input>
-									<Input
-										placeholder="Password"
-										type="password"
-										value={userCredentials["password"]}
-										_placeholder={{
-											fontSize: "14px",
-											fontWeight: "500",
-											color: "#787c7e",
-										}}
-										padding="15px"
-										fontSize="14px"
-										borderRadius="2rem"
-										border="0px"
-										backgroundColor="#f6f7f8"
-										_hover={{ border: "1px solid #00000033" }}
-										_focusVisible={{ border: "1px solid #00000033" }}
-										marginTop="16px"
-										onChange={handlePasswordChange}
-									></Input>
-									{emailSignInError && (
-									<Text fontSize="12px" marginTop="12px" color="red.400">
-										{FIREBASE_ERRORS[
-											emailSignInError?.code
-												.split("/")
-												.pop() as keyof typeof FIREBASE_ERRORS
-										] || emailSignInError.message}
+									<Heading as="h1" fontSize="20px" fontWeight="500">
+										Log In
+									</Heading>
+									<Text fontSize="12px" marginTop="8px">
+										By continuing, you are setting up a Reddit account and agree
+										to our User Agreement and Privacy Policy.
 									</Text>
-								)}
 								</div>
-								<Text fontSize="12px" marginTop="16px">
-									Forgot your{" "}
+								<div>
+									<Button
+										padding="12px"
+										border="1px solid #dadce0"
+										borderRadius="2rem"
+										width="full"
+										justifyContent="start"
+										backgroundColor="#FFFF"
+										_hover={{ backgroundColor: "gray.100" }}
+										isLoading={googleLoading}
+										onClick={handleGoogleSignIn}
+									>
+										<Image src={GoogleLogo} alt="Google Logo" height={18} />
+										<Box flex="1" textAlign="center">
+											<Text fontSize="14px" fontWeight="500">
+												Continue with Google
+											</Text>
+										</Box>
+									</Button>
+									{googleSignInError && (
+										<Text fontSize="12px" marginTop="8px" color="red.400">
+											{FIREBASE_ERRORS[
+												googleSignInError?.code
+													.split("/")
+													.pop() as keyof typeof FIREBASE_ERRORS
+											] || googleSignInError.message}
+										</Text>
+									)}
+									<Button
+										padding="12px"
+										border="1px solid #dadce0"
+										borderRadius="2rem"
+										width="full"
+										justifyContent="start"
+										backgroundColor="#FFFF"
+										_hover={{ backgroundColor: "gray.100" }}
+										marginTop="8px"
+										isLoading={appleLoading}
+										onClick={handleAppleSignIn}
+									>
+										<Image
+											src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+											alt="Google Logo"
+											height={18}
+											width="18"
+										/>
+										<Box flex="1" textAlign="center">
+											<Text fontSize="14px" fontWeight="500">
+												Continue with Apple
+											</Text>
+										</Box>
+									</Button>
+									{appleSignInError && (
+										<Text fontSize="12px" marginTop="8px" color="red.400">
+											{FIREBASE_ERRORS[
+												appleSignInError?.code
+													.split("/")
+													.pop() as keyof typeof FIREBASE_ERRORS
+											] || appleSignInError.message}
+										</Text>
+									)}
+								</div>
+								<Flex alignItems="center" justifyContent="space-between">
+									<span
+										style={{ border: "1px solid #edeff1", width: "40%" }}
+									></span>
+									<Text fontSize="14px" fontWeight="700" color="#787c7e">
+										OR
+									</Text>
+									<span
+										style={{ border: "1px solid #edeff1", width: "40%" }}
+									></span>
+								</Flex>
+								<form
+									onSubmit={handleSignInWithEmail}
+									style={{ display: "flex", flexDirection: "column" }}
+								>
+									<div>
+										<Input
+											placeholder="Email"
+											value={userCredentials["email"]}
+											_placeholder={{
+												fontSize: "14px",
+												fontWeight: "500",
+												color: "#787c7e",
+											}}
+											padding="15px"
+											fontSize="14px"
+											borderRadius="2rem"
+											border="0px"
+											backgroundColor="#f6f7f8"
+											_hover={{ border: "1px solid #00000033" }}
+											_focusVisible={{ border: "1px solid #00000033" }}
+											autoFocus={true}
+											onChange={handleEmailChange}
+										></Input>
+										<Input
+											placeholder="Password"
+											type="password"
+											value={userCredentials["password"]}
+											_placeholder={{
+												fontSize: "14px",
+												fontWeight: "500",
+												color: "#787c7e",
+											}}
+											padding="15px"
+											fontSize="14px"
+											borderRadius="2rem"
+											border="0px"
+											backgroundColor="#f6f7f8"
+											_hover={{ border: "1px solid #00000033" }}
+											_focusVisible={{ border: "1px solid #00000033" }}
+											marginTop="16px"
+											onChange={handlePasswordChange}
+										></Input>
+										{emailSignInError && (
+											<Text fontSize="12px" marginTop="12px" color="red.400">
+												{FIREBASE_ERRORS[
+													emailSignInError?.code
+														.split("/")
+														.pop() as keyof typeof FIREBASE_ERRORS
+												] || emailSignInError.message}
+											</Text>
+										)}
+									</div>
+									<Text fontSize="12px" marginTop="16px">
+										Forgot your{" "}
+										<Text
+											color="#0079d3"
+											fontWeight="700"
+											as="u"
+											onClick={goToResetPassword}
+											cursor="pointer"
+										>
+											password
+										</Text>
+										?
+									</Text>
+									<Button
+										type="submit"
+										fontSize="14px"
+										fontWeight="700"
+										backgroundColor="#FF4500"
+										color="#FFFF"
+										borderRadius="2rem"
+										height="40px"
+										marginTop="24px"
+										_hover={{ backgroundColor: "#FF4500" }}
+										isDisabled={!isFormValid()}
+										_disabled={{ backgroundColor: "#F7D8CC" }}
+										isLoading={emailSignInLoading}
+									>
+										Log In
+									</Button>
+								</form>
+								<Text fontSize="12px">
+									New to Reddit?{" "}
 									<Text
 										color="#0079d3"
 										fontWeight="700"
 										as="u"
-										onClick={goToResetPassword}
+										onClick={goToSignUp}
 										cursor="pointer"
 									>
-										password
+										Sign Up
 									</Text>
-									?
 								</Text>
-								<Button
-									type="submit"
-									fontSize="14px"
-									fontWeight="700"
-									backgroundColor="#FF4500"
-									color="#FFFF"
-									borderRadius="2rem"
-									height="40px"
-									marginTop="24px"
-									_hover={{ backgroundColor: "#FF4500" }}
-									isDisabled={!isFormValid()}
-									_disabled={{ backgroundColor: "#F7D8CC" }}
-									isLoading={emailSignInLoading}
-								>
-									Log In
-								</Button>
-							</form>
-							<Text fontSize="12px">
-								New to Reddit?{" "}
-								<Text
-									color="#0079d3"
-									fontWeight="700"
-									as="u"
-									onClick={goToSignUp}
-									cursor="pointer"
-								>
-									Sign Up
-								</Text>
-							</Text>
-						</Flex>
-					</ModalBody>
+							</Flex>
+						</ModalBody>
+					</Flex>
 				</ModalContent>
 			</Modal>
 		</>
