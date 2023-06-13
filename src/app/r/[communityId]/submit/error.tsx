@@ -53,7 +53,9 @@ const ErrorPage: FunctionComponent<ErrorPageProps> = ({
 					borderRadius="2rem"
 					padding="0 16px"
 					backgroundColor="blue.400"
+					_hover={{ backgroundColor: "blue.400" }}
 					width="auto"
+					color="#FFF"
 					onClick={openAuthModal}
 				>
 					Login/Signup
@@ -79,7 +81,9 @@ const ErrorPage: FunctionComponent<ErrorPageProps> = ({
 						borderRadius="2rem"
 						padding="0 16px"
 						backgroundColor="blue.400"
+						_hover={{ backgroundColor: "blue.400" }}
 						width="auto"
+						color="#FFF"
 					>
 						{`Go to r/${communityId}`}
 					</Button>
@@ -105,7 +109,9 @@ const ErrorPage: FunctionComponent<ErrorPageProps> = ({
 					borderRadius="2rem"
 					padding="0 16px"
 					backgroundColor="blue.400"
+					_hover={{ backgroundColor: "blue.300" }}
 					width="auto"
+					color="#FFF"
 					onClick={() => reset!()}
 				>
 					Retry

@@ -14,7 +14,7 @@ export interface Community {
 	communityType: "public" | "restricted" | "private";
 	isNsfw: boolean;
 	logoUrl?: string;
-	bannerImage?: string;
+	bannerUrl?: string;
 	about?: string;
 }
 

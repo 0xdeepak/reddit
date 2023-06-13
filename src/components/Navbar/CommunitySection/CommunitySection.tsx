@@ -28,7 +28,7 @@ const CommunitySection: FunctionComponent<CommunitySectionProps> = (props) => {
 					minWidth="60px"
 					height="auto"
 					backgroundColor="#FFFF"
-					_hover={{ border: "1px solid", borderColor: "gray.100" }}
+					_hover={{ border: "1px solid", borderColor: "gray.200" }}
 					_active={{ backgroundColor: "#FFFF" }}
 				>
 					<Flex alignItems="center">

@@ -66,7 +66,11 @@ const ForgotUsernameModal: FunctionComponent<ForgotUsernameModalProps> = () => {
 				onClose={handleClose}
 				isCentered
 			>
-				<ModalOverlay />
+				<ModalOverlay
+					bg="blackAlpha.300"
+					backdropFilter="auto"
+					backdropBlur="5px"
+				/>
 				<ModalContent
 					width="400px"
 					height="640px"

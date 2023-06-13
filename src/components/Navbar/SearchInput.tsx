@@ -14,7 +14,13 @@ const SearchInput: FunctionComponent<SearchInputProps> = () => {
 	const [searchString, setSearchString] = useState("");
 
 	return (
-  <InputGroup margin="0 16px" flexGrow={1} alignItems="center" width="auto" maxWidth="654px">
+		<InputGroup
+			margin="0 16px"
+			flexGrow={1}
+			alignItems="center"
+			width="auto"
+			maxWidth="654px"
+		>
 			<InputLeftElement pointerEvents="none">
 				<Search2Icon color="gray.300"></Search2Icon>
 			</InputLeftElement>
@@ -48,7 +54,7 @@ const SearchInput: FunctionComponent<SearchInputProps> = () => {
 							setSearchString("");
 						}}
 					>
-						<SmallCloseIcon></SmallCloseIcon>
+						<SmallCloseIcon marginBottom="4px"></SmallCloseIcon>
 					</button>
 				</Flex>
 			</InputRightElement>

@@ -34,7 +34,7 @@ const UserMenu: FunctionComponent<UserMenuProps> = ({ user }) => {
 					marginLeft="16px"
 					height="auto"
 					backgroundColor="#FFFF"
-					_hover={{ border: "1px solid", borderColor: "gray.100" }}
+					_hover={{ border: "1px solid", borderColor: "gray.200" }}
 					_active={{ backgroundColor: "#FFFF" }}
 				>
 					{user ? (

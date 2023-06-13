@@ -1,5 +1,5 @@
 import { communityState } from "@/atoms/communityAtom";
-import { Box, Flex, Text, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, Image, SkeletonText } from "@chakra-ui/react";
 import Link from "next/link";
 import { FunctionComponent } from "react";
 
@@ -10,14 +10,42 @@ interface AboutCommunityProps {
 const AboutCommunity: FunctionComponent<AboutCommunityProps> = ({
 	communityData,
 }) => {
+	if (!communityData.currentCommunity) {
+		return (
+			<Box
+				width="302px"
+				display={{ base: "none", lg: "block" }}
+				marginLeft="24px"
+				flexShrink="0"
+			>
+				<Box padding="12px" backgroundColor="#fff" borderRadius="6px">
+					<SkeletonText noOfLines={1} marginBottom="32px" skeletonHeight={6} />
+					<SkeletonText
+						noOfLines={2}
+						marginBottom="24px"
+						skeletonHeight={4}
+						spacing={3}
+					/>
+					<SkeletonText
+						noOfLines={2}
+						marginBottom="32px"
+						skeletonHeight={4}
+						spacing={3}
+					/>
+					<SkeletonText noOfLines={1} marginBottom="8px" skeletonHeight={6} />
+				</Box>
+			</Box>
+		);
+	}
 	return (
 		<Box
 			width="302px"
 			display={{ base: "none", lg: "block" }}
 			marginLeft="24px"
+			flexShrink="0"
 		>
 			<Box
-				borderRadius="6px"
+				borderRadius="4px"
 				overflow="hidden"
 				backgroundColor="#fff"
 				border="1px solid"

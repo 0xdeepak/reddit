@@ -5,7 +5,7 @@ import { firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import Error from "./error";
+import NotFound from "./notFound";
 
 export const metadata = {
 	title: "Community",
@@ -36,19 +36,19 @@ export default function CommunityLayout({
 				} else {
 					setIsError(true);
 				}
-			} catch (error) {
-				console.log("error while fetching communities", error);
+			} catch (error: any) {
+				console.log("error while fetching communities", error.message);
 			}
 		}
 		fetchCommunityData();
-	}, []);
+	}, [communityId, setCurrentCommunity]);
 
 	if (isError) {
-		return <Error></Error>;
+		return <NotFound communityId={communityId}></NotFound>;
 	}
 	return (
 		<>
-			<div style={{ height: "48px" }}></div>
+			<div style={{ height: "48px", flexShrink: "0" }}></div>
 			{children}
 		</>
 	);

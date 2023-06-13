@@ -138,13 +138,18 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 				onClose={handleClose}
 				isCentered
 			>
-				<ModalOverlay />
+				<ModalOverlay
+					bg="blackAlpha.300"
+					backdropFilter="auto"
+					backdropBlur="5px"
+				/>
 				<ModalContent
 					width="auto"
 					borderRadius="12px"
 					maxWidth="600px"
 					height="min(640px, calc(100vh - 84px))"
-					overflow="auto"
+					overflowY="auto"
+					overflowX="hidden"
 					marginTop="60px"
 					marginBottom="18px"
 				>

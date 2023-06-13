@@ -118,11 +118,16 @@ const CreateCommunityModal: FunctionComponent<CreateCommunityModalProps> = (
 				closeOnOverlayClick={false}
 				isCentered
 			>
-				<ModalOverlay />
+				<ModalOverlay
+					bg="blackAlpha.300"
+					backdropFilter="auto"
+					backdropBlur="5px"
+				/>
 				<ModalContent
 					width="auto"
 					height="min(500px, calc(100vh - 84px))"
-					overflow="auto"
+					overflowY="auto"
+					overflowX="hidden"
 					marginTop="60px"
 					marginBottom="18px"
 					maxWidth="600px"

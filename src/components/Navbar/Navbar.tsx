@@ -19,6 +19,7 @@ import {
 	getDoc,
 	getDocs,
 } from "firebase/firestore";
+import Link from "next/link";
 
 type NavbarProps = {};
 
@@ -55,22 +56,26 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
 			top="0"
 			width="full"
 			zIndex="2000"
+			borderBottom="1px solid"
+			borderBottomColor="gray.300"
 		>
-			<Flex align="center">
-				<Image
-					src="/images/redditFace.svg"
-					height="48px"
-					padding="8px 0px"
-					alt="reddit logo"
-					minWidth="32px"
-				></Image>
-				<Image
-					src="/images/redditText.svg"
-					height="48px"
-					display={{ base: "none", md: "unset" }}
-					alt="reddit logo text"
-				></Image>
-			</Flex>
+			<Link href="/">
+				<Flex align="center">
+					<Image
+						src="/images/redditFace.svg"
+						height="48px"
+						padding="8px 0px"
+						alt="reddit logo"
+						minWidth="32px"
+					></Image>
+					<Image
+						src="/images/redditText.svg"
+						height="48px"
+						display={{ base: "none", md: "unset" }}
+						alt="reddit logo text"
+					></Image>
+				</Flex>
+			</Link>
 			<CommunitySection user={currentUser.user}></CommunitySection>
 			<SearchInput></SearchInput>
 			<RightContent user={currentUser.user}></RightContent>

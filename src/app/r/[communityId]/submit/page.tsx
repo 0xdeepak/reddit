@@ -10,14 +10,28 @@ import {
 	Input,
 	Text,
 	Textarea,
+	Alert,
+	AlertDescription,
+	Image,
+	AlertIcon,
 } from "@chakra-ui/react";
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import AboutCommunity from "./aboutCommunity";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "@/atoms/userAtom";
 import ErrorPage from "./error";
-import { communitySnippet } from "@/atoms/communityAtom";
-import { Image } from "@chakra-ui/next-js";
+import { useRouter } from "next/navigation";
+import { Post } from "@/atoms/postAtom";
+import {
+	Timestamp,
+	collection,
+	doc,
+	serverTimestamp,
+	setDoc,
+	updateDoc,
+} from "firebase/firestore";
+import { firestore, storage } from "@/firebase/clientApp";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 interface CreatePostPageProps {
 	params: { communityId: string };
@@ -31,11 +45,15 @@ const postTypes = [
 const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 	params: { communityId },
 }) => {
+	const router = useRouter();
 	const currentUser = useRecoilValue(userAtom);
 	const { communityData } = useCommunityData();
 	const [selectedPostType, setSelectedPostType] = useState("text");
 	const [isUserMember, setIsUserMember] = useState(true);
 	const [selectedFile, setSelectedFile] = useState("");
+	const [description, setDescription] = useState("");
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -53,8 +71,51 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 		}
 	}, [communityData]);
 
-	const handleCreatePost = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleCreatePost = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setError(false);
+		setLoading(true);
+
+		const formData = new FormData(event.target as HTMLFormElement);
+		const postDocRef = doc(collection(firestore, "posts"));
+		const newPost: Post = {
+			id: postDocRef.id,
+			communityId: communityId,
+			communityLogoUrl: communityData.currentCommunity?.logoUrl || "",
+			creatorId: currentUser.user.uid,
+			creatorUsername: currentUser.user.displayName,
+			title: formData.get("title") as string,
+			body: description,
+			imageUrl: "",
+			commentsCount: 0,
+			voteCount: 0,
+			createdAt: serverTimestamp() as Timestamp,
+		};
+
+		try {
+			// create post document in firestore
+			const postDoc = await setDoc(postDocRef, newPost);
+
+			// if image is included in post
+			if (selectedFile) {
+				// add image to cloud storage
+				const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+				await uploadString(imageRef, selectedFile, "data_url");
+				// get public download url for image
+				const downloadUrl = await getDownloadURL(imageRef);
+
+				// update downloadUrl in post document firestore
+				await updateDoc(postDocRef, {
+					imageUrl: downloadUrl,
+				});
+			}
+			router.push(`/r/${communityId}`);
+		} catch (error: any) {
+			console.log(error);
+			setError(true);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,12 +138,12 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 	}
 	return (
 		<ChakraProvider theme={theme}>
-			<Box flexGrow="1" backgroundColor="gray.200">
+			<Box flexGrow="1" backgroundColor="gray.300">
 				<Flex
-					maxWidth="984px"
+					maxWidth="1008px"
 					width="full"
 					margin="auto"
-					padding="50px 16px 0 24px"
+					padding="50px 16px 24px 24px"
 				>
 					<Box flexGrow="1">
 						<Text
@@ -132,6 +193,7 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 										type="text"
 										maxLength={300}
 										isRequired
+										name="title"
 										placeholder="Title"
 										fontSize="14px"
 										fontWeight="400"
@@ -144,6 +206,9 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 										<Textarea
 											placeholder="Text (optional)"
 											rows={6}
+											name="description"
+											value={description}
+											onChange={(res) => setDescription(res.target.value)}
 											fontSize="14px"
 											fontWeight="400"
 											padding="8px 16px"
@@ -171,12 +236,12 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 													alt={""}
 													width={300}
 													height={170}
-													style={{ objectFit: "contain" }}
+													objectFit="contain"
+													objectPosition="center"
 												></Image>
 											)}
 											<Box marginTop="16px">
 												<Button
-													type="submit"
 													borderRadius="2rem"
 													padding="0 16px"
 													backgroundColor="#fff"
@@ -185,7 +250,7 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 													width="100px"
 													onClick={() => fileInputRef.current?.click()}
 												>
-													Upload
+													{selectedFile ? "Change" : "Upload"}
 												</Button>
 												<input
 													id="file-upload"
@@ -197,7 +262,6 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 												/>
 												{selectedFile && (
 													<Button
-														type="submit"
 														borderRadius="2rem"
 														padding="0 16px"
 														marginLeft="16px"
@@ -212,6 +276,14 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 												)}
 											</Box>
 										</Flex>
+									)}
+									{error && (
+										<Alert status="error" height="36px" marginTop="12px">
+											<AlertIcon />
+											<AlertDescription>
+												An error occured while creating post.
+											</AlertDescription>
+										</Alert>
 									)}
 									<Box
 										display="flex"
@@ -230,6 +302,7 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 												selectedPostType.toLowerCase() == "images" &&
 												!selectedFile
 											}
+											isLoading={loading}
 										>
 											Post
 										</Button>
