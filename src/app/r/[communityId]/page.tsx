@@ -29,11 +29,14 @@ const CommunityPage: FunctionComponent<CommunityPageProps> = ({
 
 	useEffect(() => {
 		if (communityData.currentCommunity?.creatorId) {
-			if (communityData.myCommunitySnippets.length == 0 || !currentUser.user) {
+			if (
+				communityData.userCommunitySnippets.length == 0 ||
+				!currentUser.user
+			) {
 				setUserRole("none");
 				return;
 			}
-			for (const el of communityData.myCommunitySnippets) {
+			for (const el of communityData.userCommunitySnippets) {
 				if (el.communityName.toLowerCase() === communityId.toLowerCase()) {
 					if (
 						communityData.currentCommunity.creatorId === currentUser.user.uid
@@ -49,7 +52,7 @@ const CommunityPage: FunctionComponent<CommunityPageProps> = ({
 		}
 	}, [
 		communityData.currentCommunity?.creatorId,
-		communityData.myCommunitySnippets,
+		communityData.userCommunitySnippets,
 		communityId,
 		currentUser.user,
 	]);

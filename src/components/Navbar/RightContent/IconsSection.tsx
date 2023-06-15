@@ -2,7 +2,7 @@ import { IconButton } from "@chakra-ui/button";
 import { Flex } from "@chakra-ui/layout";
 import { FunctionComponent } from "react";
 import { BsArrowUpRightCircle, BsChatDots } from "react-icons/bs";
-import { MdOutlineMonetizationOn } from "react-icons/md";
+import { AiOutlineDollar } from "react-icons/ai";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { GrAdd } from "react-icons/gr";
 
@@ -13,10 +13,10 @@ const IconsSection: FunctionComponent<IconsSectionProps> = () => {
 		<>
 			<Flex
 				borderRight="1px solid"
-        borderColor="gray.200"
+				borderColor="gray.200"
 				paddingRight="8px"
 				marginRight="8px"
-        display={{base: "none", md: "flex"}}
+				display={{ base: "none", md: "flex" }}
 			>
 				<IconButton
 					aria-label="Popular"
@@ -37,7 +37,7 @@ const IconsSection: FunctionComponent<IconsSectionProps> = () => {
 					backgroundColor="#FFFF"
 					_hover={{ backgroundColor: "gray.100" }}
 					borderRadius="0px"
-					icon={<MdOutlineMonetizationOn size="24px"></MdOutlineMonetizationOn>}
+					icon={<AiOutlineDollar size="24px"></AiOutlineDollar>}
 				></IconButton>
 			</Flex>
 			<IconButton
@@ -61,7 +61,7 @@ const IconsSection: FunctionComponent<IconsSectionProps> = () => {
 				borderRadius="0px"
 				icon={<IoNotificationsOutline size="20px"></IoNotificationsOutline>}
 			></IconButton>
-      <IconButton
+			<IconButton
 				aria-label="Create Post"
 				title="Create Post"
 				minWidth="32px"

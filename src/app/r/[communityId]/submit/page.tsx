@@ -49,7 +49,7 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 	const currentUser = useRecoilValue(userAtom);
 	const { communityData } = useCommunityData();
 	const [selectedPostType, setSelectedPostType] = useState("text");
-	const [isUserMember, setIsUserMember] = useState(true);
+	const [canUserPost, setCanUserPost] = useState(true);
 	const [selectedFile, setSelectedFile] = useState("");
 	const [description, setDescription] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -58,16 +58,20 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 
 	useEffect(() => {
 		if (communityData.currentCommunity) {
-			for (const comSnippet of communityData.myCommunitySnippets) {
+			if (communityData.currentCommunity.communityType === "public") {
+				setCanUserPost(true);
+				return;
+			}
+			for (const comSnippet of communityData.userCommunitySnippets) {
 				if (
 					comSnippet.communityName.toLowerCase() ===
 					communityData.currentCommunity?.name.toLowerCase()
 				) {
-					setIsUserMember(true);
+					setCanUserPost(true);
 					return;
 				}
 			}
-			setIsUserMember(false);
+			setCanUserPost(false);
 		}
 	}, [communityData]);
 
@@ -133,7 +137,7 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 
 	if (!currentUser.user) {
 		return <ErrorPage communityId={communityId} isUserNoSignedIn={true} />;
-	} else if (!isUserMember) {
+	} else if (!canUserPost) {
 		return <ErrorPage communityId={communityId} isCommunityNotJoined={true} />;
 	}
 	return (
@@ -311,7 +315,9 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 							</Box>
 						</Box>
 					</Box>
-					<AboutCommunity communityData={communityData}></AboutCommunity>
+					<AboutCommunity
+						communityData={communityData.currentCommunity}
+					></AboutCommunity>
 				</Flex>
 			</Box>
 		</ChakraProvider>

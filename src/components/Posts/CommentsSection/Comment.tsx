@@ -3,14 +3,25 @@ import { Timestamp } from "firebase/firestore";
 import { DateTime } from "luxon";
 import { FunctionComponent, useState } from "react";
 import { FaReddit } from "react-icons/fa";
-import { BsArrowUpCircle, BsArrowDownCircle } from "react-icons/bs";
+import {
+	BsArrowUpCircle,
+	BsArrowDownCircle,
+	BsArrowUpCircleFill,
+	BsArrowDownCircleFill,
+} from "react-icons/bs";
 
 interface CommentProps {
 	data: Comment;
 	currentUserId: string;
 	isAdmin: boolean;
 	isOp: boolean;
+	userVote: number;
 	onDeleteComment: (value: Comment) => Promise<void>;
+	changeCommentVote: (
+		comment: Comment,
+		prevValue: number,
+		newValue: number
+	) => Promise<void>;
 }
 
 export interface Comment {
@@ -22,6 +33,7 @@ export interface Comment {
 	postTitle: string;
 	text: string;
 	createdAt: Timestamp;
+	voteCount: number;
 }
 
 const Comment: FunctionComponent<CommentProps> = ({
@@ -29,7 +41,9 @@ const Comment: FunctionComponent<CommentProps> = ({
 	currentUserId,
 	isAdmin,
 	isOp,
+	userVote,
 	onDeleteComment,
+	changeCommentVote,
 }) => {
 	const [loading, setLoading] = useState(false);
 
@@ -69,39 +83,48 @@ const Comment: FunctionComponent<CommentProps> = ({
 					{loading && <Spinner size="xs" marginLeft="12px" color="gray.700" />}
 				</Flex>
 				<Text fontSize="14px">{data.text}</Text>
-				<Flex alignItems="center" marginTop="8px">
+				<Flex alignItems="center" marginTop="10px">
 					<Icon
-						as={BsArrowUpCircle}
 						height="16px"
 						width="16px"
-						color="gray.500"
-						_hover={{ color: "gray.900" }}
+						as={userVote === 1 ? BsArrowUpCircleFill : BsArrowUpCircle}
+						color={userVote === 1 ? "rgba(255, 60, 0, 0.8)" : "gray.500"}
+						_hover={{
+							color: userVote === 1 ? "rgba(255, 60, 0, 0.8)" : "gray.900",
+						}}
+						onClick={() => changeCommentVote(data, userVote, 1)}
 					/>
+					<Text fontSize="12px" fontWeight="600" marginLeft="8px">
+						{data.voteCount}
+					</Text>
 					<Icon
-						as={BsArrowDownCircle}
 						height="16px"
 						width="16px"
+						as={userVote === -1 ? BsArrowDownCircleFill : BsArrowDownCircle}
+						color={userVote === -1 ? "blue.500" : "gray.500"}
+						_hover={{
+							color: userVote === -1 ? "blue.500" : "gray.900",
+						}}
 						marginLeft="8px"
-						color="gray.500"
-						_hover={{ color: "gray.900" }}
+						onClick={() => changeCommentVote(data, userVote, -1)}
 					/>
-					{currentUserId === data.creatorId && (
+					{/* {currentUserId === data.creatorId && (
 						<Text
 							fontSize="12px"
 							cursor="pointer"
 							color="gray.500"
-							marginLeft="8px"
+							marginLeft="14px"
 							_hover={{ color: "gray.900" }}
 						>
 							Edit
 						</Text>
-					)}
+					)} */}
 					{(currentUserId === data.creatorId || isAdmin) && (
 						<Text
 							fontSize="12px"
 							cursor="pointer"
 							color="gray.500"
-							marginLeft="8px"
+							marginLeft="14px"
 							_hover={{ color: "gray.900" }}
 							onClick={handleDeleteComment}
 						>

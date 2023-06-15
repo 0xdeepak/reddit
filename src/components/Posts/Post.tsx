@@ -33,9 +33,7 @@ interface PostProps {
 	isUserCreatorOrAdmin: boolean;
 	isPostSelected?: boolean;
 	userVote: number;
-	onChangeVote: (
-		type: string,
-		parentId: string,
+	onChangePostVote: (
 		postId: string,
 		userId: string,
 		userVote: number,
@@ -54,7 +52,7 @@ const Post: FunctionComponent<PostProps> = ({
 	isUserCreatorOrAdmin,
 	isPostSelected,
 	userVote,
-	onChangeVote,
+	onChangePostVote,
 	onDeletePost,
 	onSelectPost,
 	openAuthModal,
@@ -84,9 +82,7 @@ const Post: FunctionComponent<PostProps> = ({
 			openAuthModal();
 			return;
 		}
-		await onChangeVote(
-			"post",
-			postData.id,
+		await onChangePostVote(
 			postData.id,
 			userId,
 			userVote,
@@ -101,9 +97,7 @@ const Post: FunctionComponent<PostProps> = ({
 			openAuthModal();
 			return;
 		}
-		await onChangeVote(
-			"post",
-			postData.id,
+		await onChangePostVote(
 			postData.id,
 			userId,
 			userVote,
@@ -136,35 +130,33 @@ const Post: FunctionComponent<PostProps> = ({
 				flexShrink="0"
 				padding="16px 4px"
 			>
-				<button>
+				<button onClick={handleUpvote}>
 					<Icon
-						as={userVote === 1 ? BsArrowUpCircleFill : BsArrowUpCircle}
 						height="22px"
 						width="22px"
+						as={userVote === 1 ? BsArrowUpCircleFill : BsArrowUpCircle}
 						color={userVote === 1 ? "rgba(255, 60, 0, 0.8)" : "gray.500"}
-						backgroundColor={userVote === 1 ? "#fff" : "inherit"}
-						borderRadius="100%"
 						_hover={{
 							color: userVote === 1 ? "rgba(255, 60, 0, 0.8)" : "gray.900",
 						}}
-						onClick={handleUpvote}
+						borderRadius="100%"
+						backgroundColor={userVote === 1 ? "#fff" : "inherit"}
 					/>
 				</button>
-				<Text fontSize="14px" fontWeight="700" padding="6px 0">
+				<Text fontSize="14px" fontWeight="700" padding="4px 0 8px">
 					{postData.voteCount}
 				</Text>
-				<button>
+				<button onClick={handleDownvote}>
 					<Icon
 						as={userVote === -1 ? BsArrowDownCircleFill : BsArrowDownCircle}
 						height="22px"
 						width="22px"
-						color={userVote === -1 ? "rgba(255, 60, 0, 0.8)" : "gray.500"}
+						color={userVote === -1 ? "blue.500" : "gray.500"}
 						backgroundColor={userVote === -1 ? "#fff" : "inherit"}
-						borderRadius="100%"
 						_hover={{
-							color: userVote === -1 ? "rgba(255, 60, 0, 0.8)" : "gray.900",
+							color: userVote === -1 ? "blue.500" : "gray.900",
 						}}
-						onClick={handleDownvote}
+						borderRadius="100%"
 					/>
 				</button>
 			</Flex>
@@ -215,8 +207,8 @@ const Post: FunctionComponent<PostProps> = ({
 						<Icon
 							as={BsChatLeft}
 							marginRight="8px"
-							height="20px"
-							width="20px"
+							height="18px"
+							width="18px"
 						/>
 						{`${postData.commentsCount} Comments`}
 					</Button>
@@ -253,8 +245,8 @@ const Post: FunctionComponent<PostProps> = ({
 						<Icon
 							as={BsBookmark}
 							marginRight="8px"
-							height="20px"
-							width="20px"
+							height="18px"
+							width="18px"
 						/>
 						Save
 					</Button>

@@ -10,20 +10,32 @@ import {
 	serverTimestamp,
 	where,
 } from "firebase/firestore";
-import { Post } from "@/atoms/postAtom";
+import { Post, UserVote } from "@/atoms/postAtom";
 import NewCommment from "./NewComment";
 import CommentItem, { Comment } from "./Comment";
 import { firestore } from "@/firebase/clientApp";
 import SkeletonLoader from "./Loader";
 import ErrorBox from "./Error";
+import { useSetRecoilState } from "recoil";
+import { authModalState } from "@/atoms/authModalAtom";
 
 interface CommentsSectionProps {
 	currentUser: userState;
 	userRole: string;
 	postData: Post;
+	userVotesData: UserVote[];
 	setPostData: (post: Post) => void;
 	onAddComment: (value: Comment) => Promise<boolean>;
 	onDeleteComment: (value: Comment) => Promise<boolean>;
+	onChangeCommentVote: (
+		commentId: string,
+		userId: string,
+		prevValue: number,
+		communityId: string,
+		newValue: number,
+		comments: Comment[],
+		setComments: (comments: Comment[]) => void
+	) => Promise<boolean>;
 	communityName: string;
 }
 
@@ -31,11 +43,14 @@ const CommentsSection: FunctionComponent<CommentsSectionProps> = ({
 	currentUser,
 	userRole,
 	postData,
+	userVotesData,
 	setPostData,
 	communityName,
 	onAddComment,
 	onDeleteComment,
+	onChangeCommentVote,
 }) => {
+	const openAuthModal = useSetRecoilState(authModalState);
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [fetchingData, setFetchingData] = useState(false);
 	const [error, setError] = useState(false);
@@ -51,6 +66,7 @@ const CommentsSection: FunctionComponent<CommentsSectionProps> = ({
 				postTitle: postData.title,
 				createdAt: serverTimestamp() as Timestamp,
 				text: value,
+				voteCount: 0,
 			};
 			// create comment in firestore
 			const res = await onAddComment(comment);
@@ -109,6 +125,32 @@ const CommentsSection: FunctionComponent<CommentsSectionProps> = ({
 		}
 	}, [postData.id]);
 
+	const changeCommentVote = async (
+		comment: Comment,
+		prevValue: number,
+		newValue: number
+	) => {
+		if (!currentUser.user) {
+			openAuthModal((prev) => ({
+				...prev,
+				view: "login",
+				open: true,
+			}));
+			return;
+		}
+		await onChangeCommentVote(
+			comment.id,
+			currentUser.user.uid,
+			prevValue,
+			communityName.toLowerCase(),
+			newValue,
+			comments,
+			(updatedComments) => {
+				setComments(updatedComments);
+			}
+		);
+	};
+
 	useEffect(() => {
 		fetchComments();
 	}, [fetchComments]);
@@ -148,7 +190,15 @@ const CommentsSection: FunctionComponent<CommentsSectionProps> = ({
 							currentUserId={currentUser.user?.uid || ""}
 							isAdmin={userRole === "admin"}
 							isOp={comment.creatorId === postData.creatorId}
+							userVote={
+								userVotesData.find(
+									(userVote) =>
+										userVote.type === "comment" &&
+										userVote.parentId === comment.id
+								)?.value || 0
+							}
 							onDeleteComment={handleDeleteComment}
+							changeCommentVote={changeCommentVote}
 						/>
 					))}
 				</Box>

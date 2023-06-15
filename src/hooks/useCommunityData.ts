@@ -39,7 +39,7 @@ const useCommunityData = () => {
 			const communities = res.docs.map((el) => el.data() as communitySnippet);
 			setCommunityState((prevVal) => ({
 				...prevVal,
-				myCommunitySnippets: communities,
+				userCommunitySnippets: communities,
 			}));
 		} catch (error: any) {
 			console.log("error while fetching communitySnippets", error);
@@ -54,7 +54,7 @@ const useCommunityData = () => {
 		} else {
 			setCommunityState((prevVal) => ({
 				...prevVal,
-				myCommunitySnippets: [],
+				userCommunitySnippets: [],
 			}));
 		}
 	}, [currentUser, fetchMyComSnippets, setCommunityState]);
@@ -82,7 +82,7 @@ const useCommunityData = () => {
 			try {
 				const newComSnippet: communitySnippet = {
 					communityName: communityData.name,
-					isModerator: false,
+					isModerator: communityData.creatorId === currentUser.user.uid,
 					logoUrl: communityData.logoUrl || "",
 				};
 

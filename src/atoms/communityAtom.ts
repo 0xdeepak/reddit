@@ -2,7 +2,7 @@ import { Timestamp } from "firebase/firestore";
 import { atom } from "recoil";
 
 export interface communityState {
-	myCommunitySnippets: communitySnippet[];
+	userCommunitySnippets: communitySnippet[];
 	currentCommunity: Community | null;
 }
 
@@ -26,7 +26,7 @@ export interface communitySnippet {
 
 const defaultcommunityState: communityState = {
 	currentCommunity: null,
-	myCommunitySnippets: [],
+	userCommunitySnippets: [],
 };
 
 export const communityAtom = atom<communityState>({

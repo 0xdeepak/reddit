@@ -1,10 +1,4 @@
-import {
-	Box,
-	Flex,
-	Skeleton,
-	SkeletonCircle,
-	SkeletonText,
-} from "@chakra-ui/react";
+import { Box, Flex, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
 
 interface SkeletonLoaderProps {

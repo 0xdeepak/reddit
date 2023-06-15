@@ -15,7 +15,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body style={{ height: "100vh", backgroundColor: "gray.200" }}>
 				<Providers>
-					<Navbar></Navbar>
+					<Navbar />
 					<main
 						style={{ height: "100%", display: "flex", flexDirection: "column" }}
 					>

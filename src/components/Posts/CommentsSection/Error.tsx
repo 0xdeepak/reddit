@@ -1,12 +1,4 @@
-import {
-	Alert,
-	AlertDescription,
-	Box,
-	Button,
-	Flex,
-	Icon,
-	Text,
-} from "@chakra-ui/react";
+import { Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
 import { MdRefresh } from "react-icons/md";
 

@@ -10,11 +10,12 @@ import Post from "@/components/Posts/Post";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userAtom } from "@/atoms/userAtom";
 import { authModalState } from "@/atoms/authModalAtom";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
 import { UserVote } from "@/atoms/postAtom";
 import SkeletonLoader from "@/components/Posts/Loader";
 import CommentsSection from "@/components/Posts/CommentsSection/CommentsSection";
+import Restricted from "./restricted";
 
 interface PostPageProps {
 	params: {
@@ -32,42 +33,44 @@ const PostPage: FunctionComponent<PostPageProps> = ({
 		postsData,
 		setuserVotesData,
 		setSelectedPost,
-		onChangeVote,
+		onChangePostVote,
 		onAddComment,
 		onDeleteComment,
 		onDeletePost,
+		onChangeCommentVote,
 	} = usePostsData();
 	const setAuthModalState = useSetRecoilState(authModalState);
 	const [userRole, setUserRole] = useState("none");
 
-	// fetch posts voted by user
+	// fetch votes of user in current community
 	useEffect(() => {
-		if (postsData.userVotes.length === 0) {
-			if (currentUser.user) {
-				const fetchuserVotes = async () => {
-					const userVotesRef = collection(
-						firestore,
-						`users/${currentUser.user.uid}/userVotes`
-					);
-					const snapshot = await getDocs(userVotesRef);
-					const userVotes = snapshot.docs.map((doc) => doc.data() as UserVote);
-					setuserVotesData(userVotes);
-				};
-				fetchuserVotes();
-			}
-		} else if (!currentUser.user) {
+		if (currentUser.user) {
+			const fetchuserVotes = async () => {
+				const userVotesQuery = query(
+					collection(firestore, `users/${currentUser.user.uid}/userVotes`),
+					where("communityId", "==", communityId.toLowerCase())
+				);
+				const snapshot = await getDocs(userVotesQuery);
+				const userVotes = snapshot.docs.map((doc) => doc.data() as UserVote);
+				setuserVotesData(userVotes);
+			};
+			fetchuserVotes();
+		} else {
 			setuserVotesData([]);
 		}
-	}, [currentUser.user, postsData.userVotes, setuserVotesData]);
+	}, [communityId, currentUser.user, setuserVotesData]);
 
 	// check user role in current community
 	useEffect(() => {
 		if (communityData.currentCommunity) {
-			if (communityData.myCommunitySnippets.length == 0 || !currentUser.user) {
+			if (
+				communityData.userCommunitySnippets.length == 0 ||
+				!currentUser.user
+			) {
 				setUserRole("none");
 				return;
 			}
-			for (const el of communityData.myCommunitySnippets) {
+			for (const el of communityData.userCommunitySnippets) {
 				if (el.communityName.toLowerCase() === communityId.toLowerCase()) {
 					if (
 						communityData.currentCommunity.creatorId === currentUser.user.uid
@@ -83,10 +86,17 @@ const PostPage: FunctionComponent<PostPageProps> = ({
 		}
 	}, [
 		communityData.currentCommunity,
-		communityData.myCommunitySnippets,
+		communityData.userCommunitySnippets,
 		communityId,
 		currentUser.user,
 	]);
+
+	if (
+		communityData.currentCommunity?.communityType === "private" &&
+		userRole === "none"
+	) {
+		return <Restricted communityId={communityData.currentCommunity.name} />;
+	}
 
 	return (
 		<ChakraProvider theme={theme}>
@@ -124,7 +134,7 @@ const PostPage: FunctionComponent<PostPageProps> = ({
 										)?.value || 0
 									}
 									isPostSelected={true}
-									onChangeVote={onChangeVote}
+									onChangePostVote={onChangePostVote}
 									onDeletePost={onDeletePost}
 									openAuthModal={() =>
 										setAuthModalState((prevVal) => ({
@@ -142,11 +152,15 @@ const PostPage: FunctionComponent<PostPageProps> = ({
 									setPostData={setSelectedPost}
 									onAddComment={onAddComment}
 									onDeleteComment={onDeleteComment}
+									onChangeCommentVote={onChangeCommentVote}
+									userVotesData={postsData.userVotes}
 								/>
 							</>
 						)}
 					</Box>
-					<AboutCommunity communityData={communityData}></AboutCommunity>
+					<AboutCommunity
+						communityData={communityData.currentCommunity}
+					></AboutCommunity>
 				</Flex>
 			</Box>
 		</ChakraProvider>

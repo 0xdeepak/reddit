@@ -1,5 +1,4 @@
 import { FunctionComponent } from "react";
-import ForgotUsernameModal from "./ForgotUsernameModal";
 import LoginModal from "./LoginModal";
 import ResetPasswordModal from "./ResetPasswordModal";
 import SignupModal from "./SignupModal";

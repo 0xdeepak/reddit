@@ -18,14 +18,9 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { firestore } from "../../../firebase/clientApp";
-import {
-	doc,
-	getDoc,
-	serverTimestamp,
-	runTransaction,
-} from "firebase/firestore";
+import { doc, serverTimestamp, runTransaction } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 
 interface CreateCommunityModalProps {
@@ -232,8 +227,8 @@ const CreateCommunityModal: FunctionComponent<CreateCommunityModalProps> = (
 														fontWeight="400"
 														color="gray.500"
 													>
-														Anyone can view this community, but only approved
-														users can post
+														Anyone can view this community, but only members can
+														post
 													</Text>
 												</Flex>
 											</Radio>
@@ -251,8 +246,7 @@ const CreateCommunityModal: FunctionComponent<CreateCommunityModalProps> = (
 														fontWeight="400"
 														color="gray.500"
 													>
-														Only approved users can view and submit to this
-														community
+														Only members can view and post to this community
 													</Text>
 												</Flex>
 											</Radio>

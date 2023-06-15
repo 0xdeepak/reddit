@@ -5,7 +5,6 @@ import {
 	collection,
 	deleteDoc,
 	doc,
-	getDoc,
 	getDocs,
 	increment,
 	query,
@@ -13,7 +12,7 @@ import {
 	writeBatch,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useRecoilState } from "recoil";
 
 interface usePostsDataProps {}
@@ -21,11 +20,9 @@ interface usePostsDataProps {}
 const usePostsData = () => {
 	const [postState, setPostState] = useRecoilState(PostAtom);
 
-	const onChangeVote = useCallback(
+	const onChangePostVote = useCallback(
 		async (
-			type: string,
 			postId: string,
-			parentId: string,
 			userId: string,
 			prevValue: number,
 			communityId: string,
@@ -49,8 +46,8 @@ const usePostsData = () => {
 
 					const newVote: UserVote = {
 						id: userVoteDocRef.id,
-						type: type,
-						parentId: parentId,
+						type: "post",
+						parentId: postId,
 						communityId: communityId,
 						value: newValue,
 					};
@@ -78,7 +75,7 @@ const usePostsData = () => {
 						await getDocs(
 							query(
 								collection(firestore, `users/${userId}/userVotes`),
-								where("parentId", "==", parentId)
+								where("parentId", "==", postId)
 							)
 						)
 					).docs.at(0)?.ref!;
@@ -88,7 +85,7 @@ const usePostsData = () => {
 						// remove vote from userVotes of user
 						batch.delete(userVoteDocRef);
 						updatedUserVotes = updatedUserVotes.filter(
-							(el) => el.parentId !== parentId
+							(el) => el.parentId !== postId
 						);
 
 						// update vote count of post
@@ -113,7 +110,7 @@ const usePostsData = () => {
 							value: newValue,
 						});
 						updatedUserVotes.forEach((el, index, array) => {
-							if (el.parentId === parentId) {
+							if (el.parentId === postId) {
 								array[index] = {
 									...el,
 									value: newValue,
@@ -144,6 +141,128 @@ const usePostsData = () => {
 					posts: updatedPosts,
 					userVotes: updatedUserVotes,
 				});
+				return true;
+			} catch (error: any) {
+				console.log(error.message);
+				return false;
+			}
+		},
+		[postState, setPostState]
+	);
+
+	const onChangeCommentVote = useCallback(
+		async (
+			commentId: string,
+			userId: string,
+			prevValue: number,
+			communityId: string,
+			newValue: number,
+			comments: Comment[],
+			setComments: (comments: Comment[]) => void
+		) => {
+			try {
+				const batch = writeBatch(firestore);
+				let updatedUserVotes = [...postState.userVotes];
+				let updatedComments = [...comments];
+
+				// post doc from posts collection
+				const commentDocRef = doc(firestore, "comments", commentId);
+
+				// user is voting post for first time
+				if (prevValue === 0) {
+					// vote doc in userVotes subcollection in user document identified by post_id on which user voted
+					const userVoteDocRef = doc(
+						collection(firestore, `users/${userId}/userVotes`)
+					);
+
+					const newVote: UserVote = {
+						id: userVoteDocRef.id,
+						type: "comment",
+						parentId: commentId,
+						communityId: communityId,
+						value: newValue,
+					};
+					// add this vote to userVotes collection of user
+					batch.set(userVoteDocRef, newVote);
+					updatedUserVotes.push(newVote);
+
+					// update vote count in post
+					batch.update(commentDocRef, {
+						voteCount: increment(newValue),
+					});
+					updatedComments.forEach((el, index, array) => {
+						if (el.id === commentId) {
+							array[index] = {
+								...el,
+								voteCount: el.voteCount + newValue,
+							};
+						}
+					});
+				} else {
+					const userVoteDocRef = (
+						await getDocs(
+							query(
+								collection(firestore, `users/${userId}/userVotes`),
+								where("parentId", "==", commentId)
+							)
+						)
+					).docs.at(0)?.ref!;
+
+					// user removed vote from post
+					if (prevValue === newValue) {
+						// remove vote from userVotes of user
+						batch.delete(userVoteDocRef);
+						updatedUserVotes = updatedUserVotes.filter(
+							(el) => el.parentId !== commentId
+						);
+
+						// update vote count of post
+						batch.update(commentDocRef, {
+							voteCount: increment(newValue * -1),
+						});
+						updatedComments.forEach((el, index, array) => {
+							if (el.id === commentId) {
+								array[index] = {
+									...el,
+									voteCount: el.voteCount + newValue * -1,
+								};
+							}
+						});
+					} else {
+						// user changed vote from downvote to upvote or vice-versa
+						// update value in userVote doc in user to new value
+						batch.update(userVoteDocRef, {
+							value: newValue,
+						});
+						updatedUserVotes.forEach((el, index, array) => {
+							if (el.parentId === commentId) {
+								array[index] = {
+									...el,
+									value: newValue,
+								};
+							}
+						});
+
+						// update vote count of post
+						batch.update(commentDocRef, {
+							voteCount: increment(newValue * 2),
+						});
+						updatedComments.forEach((el, index, array) => {
+							if (el.id === commentId) {
+								array[index] = {
+									...el,
+									voteCount: el.voteCount + newValue * 2,
+								};
+							}
+						});
+					}
+				}
+				await batch.commit();
+				setPostState((prevVal) => ({
+					...prevVal,
+					userVotes: updatedUserVotes,
+				}));
+				setComments(updatedComments);
 				return true;
 			} catch (error: any) {
 				console.log(error.message);
@@ -260,7 +379,8 @@ const usePostsData = () => {
 
 	return {
 		postsData: postState,
-		onChangeVote,
+		onChangePostVote,
+		onChangeCommentVote,
 		onAddComment,
 		onDeleteComment,
 		onSelectPost,

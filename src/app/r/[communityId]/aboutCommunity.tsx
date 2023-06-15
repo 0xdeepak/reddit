@@ -1,14 +1,7 @@
-import { Community, communityState } from "@/atoms/communityAtom";
+import { Community } from "@/atoms/communityAtom";
+import AboutCommSkeleton from "@/components/Community/AboutCommSkeleton";
 import useCommunityData from "@/hooks/useCommunityData";
-import {
-	Box,
-	Button,
-	Flex,
-	Image,
-	Skeleton,
-	SkeletonText,
-	Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Image, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { FunctionComponent, useRef, useState } from "react";
 
@@ -65,31 +58,7 @@ const AboutCommunity: FunctionComponent<AboutCommunityProps> = ({
 	};
 
 	if (!communityData) {
-		return (
-			<Box
-				width="302px"
-				display={{ base: "none", lg: "block" }}
-				marginLeft="24px"
-				flexShrink="0"
-			>
-				<Box padding="12px" backgroundColor="#fff" borderRadius="6px">
-					<SkeletonText noOfLines={1} marginBottom="32px" skeletonHeight={6} />
-					<SkeletonText
-						noOfLines={2}
-						marginBottom="24px"
-						skeletonHeight={4}
-						spacing={3}
-					/>
-					<SkeletonText
-						noOfLines={2}
-						marginBottom="32px"
-						skeletonHeight={4}
-						spacing={3}
-					/>
-					<SkeletonText noOfLines={1} marginBottom="8px" skeletonHeight={6} />
-				</Box>
-			</Box>
-		);
+		return <AboutCommSkeleton />;
 	}
 	return (
 		<Box
@@ -115,6 +84,32 @@ const AboutCommunity: FunctionComponent<AboutCommunityProps> = ({
 					<Text fontSize="14px" padding="12px 0px">
 						{communityData?.about || "-"}
 					</Text>
+					<Flex marginBottom="12px" alignItems="center">
+						<Text
+							fontSize="12px"
+							fontWeight="600"
+							borderRadius="2rem"
+							padding="3px 8px"
+							color="blue.500"
+							backgroundColor="blue.100"
+						>
+							{communityData.communityType.charAt(0).toUpperCase() +
+								communityData.communityType.slice(1)}
+						</Text>
+						{communityData.isNsfw && (
+							<Text
+								fontSize="12px"
+								fontWeight="600"
+								borderRadius="2rem"
+								padding="2px 8px"
+								color="red.400"
+								backgroundColor="red.100"
+								marginLeft="8px"
+							>
+								NSFW
+							</Text>
+						)}
+					</Flex>
 					<Text
 						fontSize="14px"
 						color="gray.5 00"

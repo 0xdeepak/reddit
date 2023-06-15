@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import {
 	Modal,
 	ModalContent,
@@ -9,14 +9,12 @@ import {
 	Text,
 	Button,
 	Flex,
-	Box,
 	Input,
 } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
 import { useSendPasswordResetEmail } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
-import { FIREBASE_ERRORS } from "@/firebase/errors";
 
 interface ResetPasswordModalProps {}
 
