@@ -11,11 +11,10 @@ import {
 	Flex,
 	Box,
 	Input,
+	Image,
 } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
-import Image from "next/image";
-import GoogleLogo from "public/images/icons/google.svg";
 import {
 	useSignInWithGoogle,
 	useSignInWithApple,
@@ -190,7 +189,11 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 										isLoading={googleLoading}
 										onClick={handleGoogleSignIn}
 									>
-										<Image src={GoogleLogo} alt="Google Logo" height={18} />
+										<Image
+											src="/images/icons/google.svg"
+											alt="Google Logo"
+											width="18px"
+										/>
 										<Box flex="1" textAlign="center">
 											<Text fontSize="14px" fontWeight="500">
 												Continue with Google
@@ -221,8 +224,7 @@ const LoginModal: FunctionComponent<LoginModalProps> = () => {
 										<Image
 											src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
 											alt="Google Logo"
-											height={18}
-											width="18"
+											width="16px"
 										/>
 										<Box flex="1" textAlign="center">
 											<Text fontSize="14px" fontWeight="500">

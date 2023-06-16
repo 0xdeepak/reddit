@@ -98,57 +98,59 @@ const Recommendations: FunctionComponent<RecommendationsProps> = ({
 				</Box>
 				{dataFetching && (
 					<Box padding="12px">
-						<SkeletonText noOfLines={5} skeletonHeight={5} spacing={4} />
+						<SkeletonText noOfLines={5} skeletonHeight={8} spacing={4} />
 					</Box>
 				)}
-				{communities.map((community, index) => (
-					<Flex
-						key={community.name}
-						padding="12px"
-						borderBottom="1px solid"
-						borderBottomColor="gray.200"
-						alignItems="center"
-						position="relative"
-					>
-						<Text fontSize="14px">{index + 1}</Text>
-						<Link
-							href={`/r/${community.name}`}
-							style={{
-								display: "flex",
-								alignItems: "center",
-								marginLeft: "32px",
-							}}
+				<Box padding="0 12px">
+					{communities.map((community, index) => (
+						<Flex
+							key={community.name}
+							padding="12px 0px"
+							borderBottom="1px solid"
+							borderBottomColor="gray.200"
+							alignItems="center"
+							position="relative"
 						>
-							<Image
-								src={community.logoUrl || "/images/redditUserLogo.svg"}
-								alt={`${community} logo`}
-								height="26px"
-								width="26px"
-								borderRadius="50%"
-							/>
-							<Text
-								fontSize="14px"
-								marginLeft="8px"
-								_hover={{ textDecoration: "underline" }}
-							>{`r/${community.name}`}</Text>
-						</Link>
-						{checkIsJoined(community.name) && (
-							<Text
-								fontSize="12px"
-								fontWeight="600"
-								borderRadius="2rem"
-								padding="4px 12px"
-								color="blue.500"
-								backgroundColor="blue.100"
-								position="absolute"
-								right="12px"
-								cursor="default"
+							<Text fontSize="14px">{index + 1}</Text>
+							<Link
+								href={`/r/${community.name}`}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									marginLeft: "32px",
+								}}
 							>
-								Joined
-							</Text>
-						)}
-					</Flex>
-				))}
+								<Image
+									src={community.logoUrl || "/images/redditUserLogo.svg"}
+									alt={`${community} logo`}
+									height="26px"
+									width="26px"
+									borderRadius="50%"
+								/>
+								<Text
+									fontSize="14px"
+									marginLeft="8px"
+									_hover={{ textDecoration: "underline" }}
+								>{`r/${community.name}`}</Text>
+							</Link>
+							{checkIsJoined(community.name) && (
+								<Text
+									fontSize="12px"
+									fontWeight="600"
+									borderRadius="2rem"
+									padding="4px 12px"
+									color="blue.500"
+									backgroundColor="blue.100"
+									position="absolute"
+									right="12px"
+									cursor="default"
+								>
+									Joined
+								</Text>
+							)}
+						</Flex>
+					))}
+				</Box>
 			</Box>
 		</Box>
 	);

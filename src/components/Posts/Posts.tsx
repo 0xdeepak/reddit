@@ -137,38 +137,39 @@ const Posts: FunctionComponent<PostsProps> = ({
 					</Text>
 				</Flex>
 			)}
-			{postsData.posts.map((post, index) => {
-				return (
-					<Post
-						key={post.id}
-						postData={post}
-						userId={currentUser.user?.uid || ""}
-						communityName={communityData.currentCommunity!.name}
-						isUserCreatorOrAdmin={
-							currentUser.user &&
-							((userRole === "member" &&
-								post.creatorId === currentUser.user.uid) ||
-								userRole === "admin")
-						}
-						userVote={
-							postsData.userVotes.find(
-								(userVote) =>
-									userVote.type === "post" && userVote.parentId === post.id
-							)?.value || 0
-						}
-						onChangePostVote={onChangePostVote}
-						onSelectPost={handleSelectPost}
-						onDeletePost={onDeletePost}
-						openAuthModal={() =>
-							setAuthModalState((prevVal) => ({
-								...prevVal,
-								open: true,
-								view: "login",
-							}))
-						}
-					/>
-				);
-			})}
+			{!postsDataFetching &&
+				postsData.posts.map((post, index) => {
+					return (
+						<Post
+							key={post.id}
+							postData={post}
+							userId={currentUser.user?.uid || ""}
+							communityName={post.communityId}
+							isUserCreatorOrAdmin={
+								currentUser.user &&
+								((userRole === "member" &&
+									post.creatorId === currentUser.user.uid) ||
+									userRole === "admin")
+							}
+							userVote={
+								postsData.userVotes.find(
+									(userVote) =>
+										userVote.type === "post" && userVote.parentId === post.id
+								)?.value || 0
+							}
+							onChangePostVote={onChangePostVote}
+							onSelectPost={handleSelectPost}
+							onDeletePost={onDeletePost}
+							openAuthModal={() =>
+								setAuthModalState((prevVal) => ({
+									...prevVal,
+									open: true,
+									view: "login",
+								}))
+							}
+						/>
+					);
+				})}
 		</Box>
 	);
 };

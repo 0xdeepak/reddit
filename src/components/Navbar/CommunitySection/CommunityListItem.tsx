@@ -25,7 +25,7 @@ const CommunityListItem: FunctionComponent<CommunityListItemProps> = ({
 					objectFit="cover"
 					overflow="hidden"
 				></Image>
-				<Text fontSize="14px" fontWeight="500">
+				<Text fontSize="14px" fontWeight="400">
 					{communityName}
 				</Text>
 			</MenuItem>

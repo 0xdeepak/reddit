@@ -156,35 +156,37 @@ const Homepage: FunctionComponent<HomepageProps> = ({}) => {
 									</Text>
 								</Flex>
 							)}
-						{postsData.posts.map((post, index) => {
-							return (
-								<PostItem
-									key={post.id}
-									postData={post}
-									userId={currentUser.user?.uid || ""}
-									communityName={post.communityId}
-									isUserCreatorOrAdmin={false}
-									isHomepage
-									userVote={
-										postsData.userVotes.find(
-											(userVote) =>
-												userVote.type === "post" &&
-												userVote.parentId === post.id
-										)?.value || 0
-									}
-									onChangePostVote={onChangePostVote}
-									onSelectPost={handleSelectPost}
-									onDeletePost={onDeletePost}
-									openAuthModal={() =>
-										setAuthModalState((prevVal) => ({
-											...prevVal,
-											open: true,
-											view: "login",
-										}))
-									}
-								/>
-							);
-						})}
+						{!dataFetchingError &&
+							!postsDataFetching &&
+							postsData.posts.map((post, index) => {
+								return (
+									<PostItem
+										key={post.id}
+										postData={post}
+										userId={currentUser.user?.uid || ""}
+										communityName={post.communityId}
+										isUserCreatorOrAdmin={false}
+										isHomepage
+										userVote={
+											postsData.userVotes.find(
+												(userVote) =>
+													userVote.type === "post" &&
+													userVote.parentId === post.id
+											)?.value || 0
+										}
+										onChangePostVote={onChangePostVote}
+										onSelectPost={handleSelectPost}
+										onDeletePost={onDeletePost}
+										openAuthModal={() =>
+											setAuthModalState((prevVal) => ({
+												...prevVal,
+												open: true,
+												view: "login",
+											}))
+										}
+									/>
+								);
+							})}
 					</Box>
 					<Recommendations
 						isUser={!!currentUser.user}

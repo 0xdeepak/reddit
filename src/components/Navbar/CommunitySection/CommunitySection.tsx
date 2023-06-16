@@ -105,7 +105,7 @@ const CommunitySection: FunctionComponent<CommunitySectionProps> = ({
 						)}
 					</Flex>
 				</MenuButton>
-				<MenuList width="260px" maxHeight="460px">
+				<MenuList width="260px" maxHeight="460px" overflowY="auto">
 					<CommunityMenuList
 						user={user}
 						communitySnippets={communityData.userCommunitySnippets}

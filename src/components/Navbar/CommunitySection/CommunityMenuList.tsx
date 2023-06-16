@@ -115,7 +115,7 @@ const CommunityMenuList: FunctionComponent<CommunityMenuListProps> = ({
 						marginRight="8px"
 						color="gray.600"
 					></Icon>
-					<Text fontSize="14px" fontWeight="500">
+					<Text fontSize="14px" fontWeight="400">
 						Create Community
 					</Text>
 				</MenuItem>
@@ -137,7 +137,7 @@ const CommunityMenuList: FunctionComponent<CommunityMenuListProps> = ({
 							marginRight="8px"
 							color="gray.600"
 						></Icon>
-						<Text fontSize="14px" fontWeight="500">
+						<Text fontSize="14px" fontWeight="400">
 							Home
 						</Text>
 					</MenuItem>
