@@ -19,7 +19,6 @@ const Restricted: FunctionComponent<RestrictedProps> = ({ communityId }) => {
 			alignItems="center"
 			flexGrow="1"
 			direction="column"
-			height="150vh"
 			backgroundColor="gray.200"
 		>
 			<Text

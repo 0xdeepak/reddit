@@ -6,6 +6,8 @@ import CreateCommunityModal from "../../Modals/CreateCommunity/CreateCommunityMo
 import Link from "next/link";
 import { communitySnippet } from "@/atoms/communityAtom";
 import CommunityListItem from "./CommunityListItem";
+import { useSetRecoilState } from "recoil";
+import { authModalState } from "@/atoms/authModalAtom";
 
 interface CommunityMenuListProps {
 	user?: any | null;
@@ -19,6 +21,8 @@ const CommunityMenuList: FunctionComponent<CommunityMenuListProps> = ({
 	const [moderatingCommunities, setModeratingCommunities] = useState<
 		communitySnippet[]
 	>([]);
+	const openAuthModal = useSetRecoilState(authModalState);
+
 	const [modalOpen, setModalOpen] = useState({
 		value: false,
 		isCallback: false,
@@ -32,6 +36,14 @@ const CommunityMenuList: FunctionComponent<CommunityMenuListProps> = ({
 	}, [modalOpen]);
 
 	const openModal = () => {
+		if (!user) {
+			openAuthModal((prev) => ({
+				...prev,
+				view: "login",
+				open: true,
+			}));
+			return;
+		}
 		setModalOpen((prevVal) => ({
 			...prevVal,
 			value: true,
@@ -39,7 +51,6 @@ const CommunityMenuList: FunctionComponent<CommunityMenuListProps> = ({
 	};
 
 	const closeModal = () => {
-		console.log("closing mdl");
 		setModalOpen({
 			value: false,
 			isCallback: false,

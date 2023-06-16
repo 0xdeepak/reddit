@@ -86,6 +86,7 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 			id: postDocRef.id,
 			communityId: communityId,
 			communityLogoUrl: communityData.currentCommunity?.logoUrl || "",
+			communityType: communityData.currentCommunity!.communityType,
 			creatorId: currentUser.user.uid,
 			creatorUsername: currentUser.user.displayName,
 			title: formData.get("title") as string,

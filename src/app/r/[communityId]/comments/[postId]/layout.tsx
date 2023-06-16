@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import NotFound from "./notFound";
 
 export const metadata = {
-	title: "Comments",
+	title: "Post",
 	description: "Detailed Post Page",
 };
 

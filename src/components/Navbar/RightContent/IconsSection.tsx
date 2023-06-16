@@ -40,38 +40,40 @@ const IconsSection: FunctionComponent<IconsSectionProps> = () => {
 					icon={<AiOutlineDollar size="24px"></AiOutlineDollar>}
 				></IconButton>
 			</Flex>
-			<IconButton
-				aria-label="Chat"
-				title="Chat"
-				minWidth="32px"
-				height="32px"
-				backgroundColor="#FFFF"
-				_hover={{ backgroundColor: "gray.100" }}
-				borderRadius="0px"
-				icon={<BsChatDots size="20px"></BsChatDots>}
-			></IconButton>
-			<IconButton
-				aria-label="Notifications"
-				title="Notifications"
-				minWidth="32px"
-				height="32px"
-				marginLeft="8px"
-				backgroundColor="#FFFF"
-				_hover={{ backgroundColor: "gray.100" }}
-				borderRadius="0px"
-				icon={<IoNotificationsOutline size="20px"></IoNotificationsOutline>}
-			></IconButton>
-			<IconButton
-				aria-label="Create Post"
-				title="Create Post"
-				minWidth="32px"
-				height="32px"
-				marginLeft="8px"
-				backgroundColor="#FFFF"
-				_hover={{ backgroundColor: "gray.100" }}
-				borderRadius="0px"
-				icon={<GrAdd size="20px"></GrAdd>}
-			></IconButton>
+			<Flex display={{ base: "none", sm: "flex" }}>
+				<IconButton
+					aria-label="Chat"
+					title="Chat"
+					minWidth="32px"
+					height="32px"
+					backgroundColor="#FFFF"
+					_hover={{ backgroundColor: "gray.100" }}
+					borderRadius="0px"
+					icon={<BsChatDots size="20px"></BsChatDots>}
+				></IconButton>
+				<IconButton
+					aria-label="Notifications"
+					title="Notifications"
+					minWidth="32px"
+					height="32px"
+					marginLeft="8px"
+					backgroundColor="#FFFF"
+					_hover={{ backgroundColor: "gray.100" }}
+					borderRadius="0px"
+					icon={<IoNotificationsOutline size="20px"></IoNotificationsOutline>}
+				></IconButton>
+				<IconButton
+					aria-label="Create Post"
+					title="Create Post"
+					minWidth="32px"
+					height="32px"
+					marginLeft="8px"
+					backgroundColor="#FFFF"
+					_hover={{ backgroundColor: "gray.100" }}
+					borderRadius="0px"
+					icon={<GrAdd size="20px"></GrAdd>}
+				></IconButton>
+			</Flex>
 		</>
 	);
 };

@@ -43,6 +43,7 @@ const Posts: FunctionComponent<PostsProps> = ({
 		if (!communityData.currentCommunity?.name) {
 			return;
 		}
+		setDataFetchingError(false);
 		setPostsDataFetching(true);
 		try {
 			const postsQuery = query(

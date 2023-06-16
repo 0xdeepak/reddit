@@ -11,6 +11,18 @@ export const metadata = {
 	title: "Community",
 	description: "Community Homepage",
 };
+export async function generateMetadata({
+	params,
+	searchParams,
+}: {
+	params: any;
+	searchParams: any;
+}) {
+	return {
+		title: params.communityId,
+		description: `${params.communityId} Homepage`,
+	};
+}
 
 export default function CommunityLayout({
 	children,
@@ -46,10 +58,5 @@ export default function CommunityLayout({
 	if (isError) {
 		return <NotFound communityId={communityId}></NotFound>;
 	}
-	return (
-		<>
-			<div style={{ height: "48px", flexShrink: "0" }}></div>
-			{children}
-		</>
-	);
+	return <>{children}</>;
 }

@@ -5,6 +5,7 @@ export interface Post {
 	id: string;
 	communityId: string;
 	communityLogoUrl: string;
+	communityType: string;
 	creatorId: string;
 	creatorUsername: string;
 	title: string;

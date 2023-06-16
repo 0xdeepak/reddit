@@ -1,16 +1,9 @@
 "use client";
-
 import { FunctionComponent, useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { firestore } from "@/firebase/clientApp";
-import { Community, communityAtom } from "@/atoms/communityAtom";
-import { Button, ChakraProvider, Flex, Box, Text } from "@chakra-ui/react";
+import { ChakraProvider, Flex, Box } from "@chakra-ui/react";
 import { theme } from "@/chakra/theme";
-import Link from "next/link";
-import Error from "./notFound";
 import Header from "./header";
 import useCommunityData from "@/hooks/useCommunityData";
-import { useRouter } from "next/navigation";
 import AboutCommunity from "./aboutCommunity";
 import Posts from "@/components/Posts/Posts";
 import { useRecoilValue } from "recoil";

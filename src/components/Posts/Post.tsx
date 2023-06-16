@@ -9,8 +9,15 @@ import {
 	Heading,
 	Icon,
 	Image,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
 	Skeleton,
 	Text,
+	useDisclosure,
 } from "@chakra-ui/react";
 import {
 	BsArrowUpCircle,
@@ -19,12 +26,14 @@ import {
 	BsBookmark,
 	BsArrowUpCircleFill,
 	BsArrowDownCircleFill,
+	BsLink45Deg,
 } from "react-icons/bs";
 import { IoArrowRedoOutline } from "react-icons/io5";
 import { AiOutlineDelete } from "react-icons/ai";
 import { DateTime } from "luxon";
 import { Post } from "@/atoms/postAtom";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface PostProps {
 	postData: Post;
@@ -32,6 +41,7 @@ interface PostProps {
 	communityName: string;
 	isUserCreatorOrAdmin: boolean;
 	isPostSelected?: boolean;
+	isHomepage?: boolean;
 	userVote: number;
 	onChangePostVote: (
 		postId: string,
@@ -51,6 +61,7 @@ const Post: FunctionComponent<PostProps> = ({
 	communityName,
 	isUserCreatorOrAdmin,
 	isPostSelected,
+	isHomepage,
 	userVote,
 	onChangePostVote,
 	onDeletePost,
@@ -60,6 +71,7 @@ const Post: FunctionComponent<PostProps> = ({
 	const router = useRouter();
 	const [isImageLoading, setIsImageLoading] = useState(!!postData.imageUrl);
 	const [loading, setLoading] = useState({ action: "", value: false });
+	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [error, setError] = useState("");
 
 	const handlePostDelete = async (event: React.MouseEvent) => {
@@ -167,10 +179,40 @@ const Post: FunctionComponent<PostProps> = ({
 						<AlertDescription>{error}</AlertDescription>
 					</Alert>
 				)}
-				<Text fontSize="12px" color="gray.500" padding="8px">
-					Posted by u/{postData.creatorUsername}{" "}
-					{DateTime.fromMillis(postData.createdAt.toMillis()).toRelative()}
-				</Text>
+				<Flex padding="8px" alignItems="center">
+					{isHomepage && (
+						<Link href={`r/${communityName}`}>
+							<Flex
+								alignItems="center"
+								marginRight="8px"
+								onClick={(event) => event.stopPropagation()}
+							>
+								<Image
+									src={
+										postData.communityLogoUrl || "/images/redditUserLogo.svg"
+									}
+									alt={`${communityName} logo`}
+									height="20px"
+									width="20px"
+									objectFit="cover"
+									borderRadius="50%"
+								/>
+								&nbsp;&nbsp;
+								<Text
+									fontSize="12px"
+									fontWeight="600"
+									_hover={{ textDecoration: "underline" }}
+								>
+									{`r/${postData.communityId}`}
+								</Text>
+							</Flex>
+						</Link>
+					)}
+					<Text fontSize="12px" color="gray.500">
+						Posted by u/{postData.creatorUsername}{" "}
+						{DateTime.fromMillis(postData.createdAt.toMillis()).toRelative()}
+					</Text>
+				</Flex>
 				<Heading as="h3" fontSize="18px" fontWeight="600" marginLeft="8px">
 					{postData.title}
 				</Heading>
@@ -222,6 +264,10 @@ const Post: FunctionComponent<PostProps> = ({
 						borderRadius="2px"
 						backgroundColor="#fff"
 						marginLeft="8px"
+						onClick={(event) => {
+							event.stopPropagation();
+							onOpen();
+						}}
 					>
 						<Icon
 							as={IoArrowRedoOutline}
@@ -275,6 +321,60 @@ const Post: FunctionComponent<PostProps> = ({
 					)}
 				</Flex>
 			</Box>
+			<Modal isOpen={isOpen} onClose={onClose} isCentered>
+				<ModalOverlay
+					bg="blackAlpha.300"
+					backdropFilter="auto"
+					backdropBlur="5px"
+				/>
+				<ModalContent maxWidth="500px" width="auto">
+					<ModalHeader fontSize="16px">Share</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody paddingBottom="20px">
+						<Flex
+							borderRadius="6px"
+							overflow="hidden"
+							border="1px solid"
+							borderColor="gray.300"
+							borderLeft="none"
+						>
+							<Box overflowX="auto" flexGrow="1">
+								<Text
+									padding="8px 16px 8px 12px"
+									fontSize="14px"
+									borderLeft="4px solid"
+									borderLeftColor="blue.500"
+								>
+									{`${process.env.NEXT_PUBLIC_REACT_SERVER_URL}/r/${communityName}/comments/${postData.id}`}
+								</Text>
+							</Box>
+							<Button
+								id="copy-link"
+								backgroundColor="#fff"
+								borderRadius="0"
+								height="auto"
+								width="auto"
+								title="Copy"
+								minWidth="0"
+								padding="0 8px"
+								onClick={async () => {
+									await navigator.clipboard.writeText(
+										`${process.env.NEXT_PUBLIC_REACT_SERVER_URL}/r/${communityName}/comments/${postData.id}`
+									);
+									document.getElementById("copy-link")!.title = "Copied";
+								}}
+							>
+								<Icon
+									as={BsLink45Deg}
+									height="24px"
+									width="24px"
+									color="gray.600"
+								/>
+							</Button>
+						</Flex>
+					</ModalBody>
+				</ModalContent>
+			</Modal>
 		</Flex>
 	);
 };

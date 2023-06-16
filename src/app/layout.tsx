@@ -3,7 +3,10 @@ import Navbar from "@/components/Navbar/Navbar";
 
 export const metadata = {
 	title: "RedDot (Reddit Clone)",
-	description: "Reddit Clone Using NextJs",
+	description: "Reddit Clone Webapp | Deepak Yadav",
+	icons: {
+		icons: "./favicon.ico",
+	},
 };
 
 export default function RootLayout({
@@ -19,6 +22,7 @@ export default function RootLayout({
 					<main
 						style={{ height: "100%", display: "flex", flexDirection: "column" }}
 					>
+						<div style={{ height: "48px", flexShrink: "0" }}></div>
 						{children}
 					</main>
 				</Providers>
