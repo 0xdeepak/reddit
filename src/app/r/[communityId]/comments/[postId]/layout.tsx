@@ -7,10 +7,10 @@ import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import NotFound from "./notFound";
 
-export const metadata = {
-	title: "Post",
-	description: "Detailed Post Page",
-};
+// export const metadata = {
+// 	title: "Post",
+// 	description: "Detailed Post Page",
+// };
 
 export default function PostLayout({
 	children,

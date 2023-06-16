@@ -7,22 +7,22 @@ import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import NotFound from "./notFound";
 
-export const metadata = {
-	title: "Community",
-	description: "Community Homepage",
-};
-export async function generateMetadata({
-	params,
-	searchParams,
-}: {
-	params: any;
-	searchParams: any;
-}) {
-	return {
-		title: params.communityId,
-		description: `${params.communityId} Homepage`,
-	};
-}
+// export const metadata = {
+// 	title: "Community",
+// 	description: "Community Homepage",
+// };
+// export async function generateMetadata({
+// 	params,
+// 	searchParams,
+// }: {
+// 	params: any;
+// 	searchParams: any;
+// }) {
+// 	return {
+// 		title: params.communityId,
+// 		description: `${params.communityId} Homepage`,
+// 	};
+// }
 
 export default function CommunityLayout({
 	children,
