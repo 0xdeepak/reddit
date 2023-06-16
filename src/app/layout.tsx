@@ -2,8 +2,9 @@ import { Providers } from "./providers";
 import Navbar from "@/components/Navbar/Navbar";
 
 export const metadata = {
-	title: "RedDot (Reddit Clone)",
-	description: "Reddit Clone Webapp | Deepak Yadav",
+	title: "Reddit | Clone",
+	description:
+		"Reddit Webapp Clone by Deepak Yadav. Built using NextJs and Firebase",
 	icons: {
 		icons: "./favicon.ico",
 	},
