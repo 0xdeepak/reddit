@@ -59,7 +59,7 @@ const CommunityPage: FunctionComponent<CommunityPageProps> = ({
 					// maxWidth="1320px"
 					width="full"
 					margin="auto"
-					padding="20px 16px 20px 24px"
+					padding="20px 16px"
 				>
 					{/* <Box
 						width="312px"

@@ -1,3 +1,4 @@
+import GithubLink from "@/components/Common/githubLink";
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar/Navbar";
 
@@ -20,6 +21,7 @@ export default function RootLayout({
 			<body style={{ height: "100vh", backgroundColor: "gray.200" }}>
 				<Providers>
 					<Navbar />
+					<GithubLink />
 					<main
 						style={{ height: "100%", display: "flex", flexDirection: "column" }}
 					>

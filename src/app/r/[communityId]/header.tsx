@@ -50,7 +50,7 @@ const Header: FunctionComponent<HeaderProps> = ({ currentUser, userRole }) => {
 					width="full"
 					alignItems="flex-start"
 					margin="auto"
-					padding="0 16px 0 24px"
+					padding="0 16px"
 				>
 					<Image
 						src={

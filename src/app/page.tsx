@@ -133,7 +133,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({}) => {
 					// maxWidth="1320px"
 					width="full"
 					margin="auto"
-					padding="20px 16px 20px 24px"
+					padding="20px 16px"
 				>
 					<Box flexGrow="1">
 						<SortPosts

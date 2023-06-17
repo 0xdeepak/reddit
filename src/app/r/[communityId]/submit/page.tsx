@@ -148,7 +148,7 @@ const CreatePostPage: FunctionComponent<CreatePostPageProps> = ({
 					maxWidth="1008px"
 					width="full"
 					margin="auto"
-					padding="50px 16px 24px 24px"
+					padding="50px 16px 24px"
 				>
 					<Box flexGrow="1">
 						<Text

@@ -135,17 +135,17 @@ const Post: FunctionComponent<PostProps> = ({
 			}}
 		>
 			<Flex
-				width="44px"
+				width="38px"
 				direction="column"
 				alignItems="center"
 				backgroundColor={isPostSelected ? "#FFF" : "gray.100"}
 				flexShrink="0"
-				padding="16px 4px"
+				padding="16px 0"
 			>
 				<button onClick={handleUpvote}>
 					<Icon
-						height="22px"
-						width="22px"
+						height="24px"
+						width="24px"
 						as={userVote === 1 ? BsArrowUpCircleFill : BsArrowUpCircle}
 						color={userVote === 1 ? "rgba(255, 60, 0, 0.8)" : "gray.500"}
 						_hover={{
@@ -161,8 +161,8 @@ const Post: FunctionComponent<PostProps> = ({
 				<button onClick={handleDownvote}>
 					<Icon
 						as={userVote === -1 ? BsArrowDownCircleFill : BsArrowDownCircle}
-						height="22px"
-						width="22px"
+						height="24px"
+						width="24px"
 						color={userVote === -1 ? "blue.500" : "gray.500"}
 						backgroundColor={userVote === -1 ? "#fff" : "inherit"}
 						_hover={{
@@ -235,14 +235,14 @@ const Post: FunctionComponent<PostProps> = ({
 						></Image>
 					</Flex>
 				)}
-				<Flex padding="8px 8px 8px">
+				<Flex padding="4px 8px">
 					<Button
 						padding="0 4px"
 						color="gray.500"
 						fontSize="14px"
 						fontWeight="500"
 						width="auto"
-						height="34px"
+						height="30px"
 						borderRadius="2px"
 						backgroundColor="#fff"
 					>
@@ -260,7 +260,7 @@ const Post: FunctionComponent<PostProps> = ({
 						fontSize="14px"
 						fontWeight="500"
 						width="auto"
-						height="34px"
+						height="30px"
 						borderRadius="2px"
 						backgroundColor="#fff"
 						marginLeft="8px"
@@ -283,7 +283,7 @@ const Post: FunctionComponent<PostProps> = ({
 						fontSize="14px"
 						fontWeight="500"
 						width="auto"
-						height="34px"
+						height="30px"
 						borderRadius="2px"
 						backgroundColor="#fff"
 						marginLeft="8px"
@@ -303,7 +303,7 @@ const Post: FunctionComponent<PostProps> = ({
 							fontSize="14px"
 							fontWeight="500"
 							width="auto"
-							height="34px"
+							height="30px"
 							borderRadius="2px"
 							backgroundColor="#fff"
 							marginLeft="8px"

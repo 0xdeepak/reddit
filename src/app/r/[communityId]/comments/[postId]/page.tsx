@@ -105,7 +105,7 @@ const PostPage: FunctionComponent<PostPageProps> = ({
 					maxWidth="1064px"
 					width="full"
 					margin="auto"
-					padding="32px 16px 24px 24px"
+					padding="32px 16px 24px"
 				>
 					<Box
 						flexGrow="1"
