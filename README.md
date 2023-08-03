@@ -8,6 +8,28 @@
 
 [https://my-reddit-clone.vercel.app/](https://my-reddit-clone.vercel.app/)<br/><br/>
 
+<h2>✨ Features</h2>
+
+Here're some of the project's best features:
+
+*   Social Sign in with Google/Apple using OAuth
+*   Create a Community with Public/Restricted/Private roles
+*   Customize community profile with logo and banner
+*   Join and create posts in communities
+*   Comment on posts and upvote/downvote posts and comments
+
+  
+<br/><h2>💻 Built with</h2>
+
+Technologies used in the project:
+
+*   Framework - Next.js
+*   Language - Typescript
+*   Design Library - Chakra UI
+*   State Management - Recoil.js
+*   Database and Cloud Storage - Firebase
+</br>
+
 <h2>Project Screenshots:</h2><br/>
 
 <img src="https://drive.google.com/uc?export=view&amp;id=1_pDdp7NZ_6ku-mXt7v7rG8HTQ9g68ZLC" alt="project-screenshot" ><br/><br/>
@@ -21,28 +43,3 @@
 <img src="https://drive.google.com/uc?export=view&amp;id=1vorSeqqX6G5K2aGLINgbLWNpDKnlRKFl" alt="project-screenshot" ><br/><br/>
 
 <img src="https://drive.google.com/uc?export=view&amp;id=1nGlQTclklgPrqnMp8chBNd9TcqKWUObb" alt="project-screenshot" ><br/><br/>
-
-  
-  
-<h2>✨ Features</h2>
-
-Here're some of the project's best features:
-
-*   Social Sign in with Google/Apple using OAuth
-*   Create a Community with Public/Restricted/Private roles
-*   Customize community profile with logo and banner
-*   Join and create posts in communities
-*   Comment on posts and upvote/downvote posts and comments
-
-  
-  
-<br/><h2>💻 Built with</h2>
-
-Technologies used in the project:
-
-*   Framework - Next.js
-*   Language - Typescript
-*   Design Library - Chakra UI
-*   State Management - Recoil.js
-*   Database and Cloud Storage - Firebase
-</br>
